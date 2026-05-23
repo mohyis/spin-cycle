@@ -5,7 +5,7 @@ const staffSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'admin',
     },
-    idstaff: {
+    staffId: {
         type: String,
         unique: true
     },

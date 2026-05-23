@@ -18,8 +18,7 @@ const customerSchema = new mongoose.Schema({
         required: true      
     },
     pickUpTime: {
-        type: String,
-        required: true
+        type: Date
     },
     email: {
         type: String,

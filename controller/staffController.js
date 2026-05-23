@@ -1,11 +1,14 @@
 const staffModel = require('../models/staff');
 const bcrypt = require('bcrypt')
+const otp = require('otp-generator')
 
 
 exports.createStaff = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, address, position } = req.body;
+        const {id} = req.user;
+        const { firstName, lastName, email, phoneNumber, password, address } = req.body;
         const existingStaff = await staffModel.findOne({ email: email.toLowerCase() });
+        const generatedStaffId = `#SC-${otp.generate(6, { lowerCase: false, upperCase: true, specialChars: false, alphabets: true, digits: true })}-${Math.floor(Math.random() * 100)}`;
 
         if (existingStaff) {
             return res.status(400).json({
@@ -13,14 +16,15 @@ exports.createStaff = async (req, res) => {
             })
         };
 
-        const hash = await bcrypt.hash(password, await bcrypt.genSalt(10))
         const staff = await staffModel.create({
+            adminId: id,
+            staffId: generatedStaffId,
             firstName,
             lastName,
             email,
             address,
-            position,
-            password: hash
+            employmentDate: new Date(Date.now()),
+            phoneNumber
         });
 
         res.status(201).json({
@@ -39,7 +43,7 @@ exports.getAllStaff = async (req, res) => {
     try {
         const staffs = await staffModel.find();
         res.status(200).json({
-            message: 'Get all staffs',
+            message: 'All staffs retrieved successfully',
             data: staffs
         })
     } catch (error) {
@@ -60,10 +64,68 @@ exports.getOneStaff = async (req, res) => {
                 message: 'Staff not found'
             })
         };
+        const data = {
+            PERSONAL_INFO: {firstName: staff.firstName, lastName: staff.lastName, email: staff.email, phoneNumber: staff.phoneNumber, address: staff.address, position: staff.position},
+            EDUCATION_CREDENTIALS: {bscScience: staff.bscScience, schoolAttended: staff.schoolAttended, professionalCerts: staff.professionalCerts},
+            GUARANTOR_INFO: {firstName: staff.guarantorfirstName, lastName: staff.guarantorlastName, email: staff.guarantorEmail, phoneNumber: staff.guarantorPhoneNumber, address: staff.guarantorAddress, relationship: staff.relationship},
+        }
 
         res.status(200).json({
-            message: 'Get staff',
-            data: staff
+            message: 'staff retrieved successfully',
+            data
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+};
+
+exports.updateStaff = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { firstName, lastName, email, phoneNumber, address, position, status } = req.body;
+        const staff = await staffModel.findById(id);        
+        if (!staff) {
+            return res.status(404).json({
+                message: 'Staff not found'
+            })
+        };
+
+        staff.firstName = firstName || staff.firstName; 
+        staff.lastName = lastName || staff.lastName;
+        staff.email = email || staff.email;
+        staff.phoneNumber = phoneNumber || staff.phoneNumber;
+        staff.address = address || staff.address;
+        staff.position = position || staff.position;
+        staff.status = status || staff.status;
+
+        const updatedStaff = await staff.save();
+
+        res.status(200).json({
+            message: 'Staff updated successfully',
+            data: updatedStaff
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+};
+
+exports.deleteStaff = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const staff = await staffModel.findByIdAndDelete(id);
+
+        if (!staff) {
+            return res.status(404).json({
+                message: 'Staff not found'
+            })
+        }
+
+        res.status(200).json({
+            message: 'Staff deleted successfully'
         })
     } catch (error) {
         res.status(500).json({

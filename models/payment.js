@@ -9,6 +9,10 @@ const paymentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'customer',
     },
+    orderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'order',
+    },
     paymentId: {
         type: String,  
         required: true
@@ -29,7 +33,19 @@ const paymentSchema = new mongoose.Schema({
         type: Number,  
         required: true
     },
-    amount: {
+    subTotal: {
+        type: Number,  
+        required: true
+    },
+    totalAmount: {
+        type: Number,  
+        required: true
+    },
+    amountPaid: {
+        type: Number,  
+        required: true
+    },
+    balance: {
         type: Number,  
         required: true
     },

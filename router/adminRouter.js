@@ -1,7 +1,6 @@
 const router = require('express').Router()
 const passport = require('passport')
 const { register, login } = require('../controller/adminController')
-const { authenticator } = require('../middleware/validation')
 
 router.post('/register', register)
 router.post('/login', login)

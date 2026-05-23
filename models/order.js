@@ -5,13 +5,46 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'admin',
     },
+    staffId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'staff',
+    },
     customerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'customer',
     },
     orderId: {
         type: String,  
+        required: true,
+        unique: true
+    },
+    firstName: {
+        type: String,  
         required: true
+    },
+    lastName: {
+        type: String,  
+        required: true
+    },
+    pickUpDate: {
+        type: Date,
+        required: true
+    },
+    pickUpTime: {
+        type: Date,
+        required: true
+    },
+    email: {
+        type: String,
+        require: true
+    },
+    address: {
+        type: String,
+        require: true
+    },
+    phoneNumber: {
+        type: String,
+        require: true
     },
     item: {
         type: String,  
@@ -29,10 +62,21 @@ const orderSchema = new mongoose.Schema({
         type: Number,  
         required: true
     },
+    deliveryDate: {
+        type: Date,
+        require: true
+    },
+    deliveryTime: {
+        type: String
+    },
+    deliveryMode: {
+        type: String,
+        enum: ['pickup', 'delivery'],
+        require: true
+    },
     paymentMode: {
         type: String,
-        enum: ["cash", "transfer", "pos"],
-        required: true
+        enum: ["cash", "transfer", "pos"]
     },
     bookingDate: {
         type: Date,
@@ -40,22 +84,28 @@ const orderSchema = new mongoose.Schema({
     },
     readyDate: {
         type: Date,
-        required: true
     },
-    deliveryMode: {
-        type: String,
-        enum: ["pick-up", "delivery"],
-        required: true
-    },
-    address: {
-        type: String,
-        required: true
+    note: {
+       type: String,
+       required: true      
     },
     status: {
         type: String,
         enum: ["new request", "in-progress", "completed", "cancelled"],
         default: "new request",
         required: true
+    },
+    staffName: {
+        type: String,
+    },
+    idStaff: {
+        type: String,
+    },
+    vehicleType: {
+        type: String,
+    },
+    duty: {
+        type: String,
     }
 })
 

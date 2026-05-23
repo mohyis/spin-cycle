@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-const userModel = require('../models/admin');
-const pickerModel = require('../models/admin');
+const adminModel = require('../models/admin');
 
 exports.authenticator = async(req,res,next)=>{
    try {
@@ -48,15 +47,15 @@ exports.checkAdmin = async(req,res,next)=>{
                 statusCode: 400
             })
         }
-        const findUser = await pickerModel.findById(result.id)
-        if(!findUser){
+        const findAdmin = await adminModel.findById(result.id)
+        if(!findAdmin){
             return next({
-                message: 'user not found',
+                message: 'admin not found',
                 statusCode: 404
             })
         }
 
-        const role = findUser.role
+        const role = findAdmin.role
 
         if (role !== 'admin'){
             return next({

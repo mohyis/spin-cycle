@@ -3,6 +3,8 @@ require('dotenv').config()
 const mongoose = require('mongoose');
 const passport = require('passport')
 const adminRouter = require('./router/adminRouter')
+const orderRouter = require('./router/orderRouter')
+const staffRouter = require('./router/staffRouter')
 const expressSession = require('express-session')
 const app = express()
 const PORT = 5907
@@ -14,7 +16,8 @@ app.use(expressSession({secret: "mohyis", saveUninitialized: false, resave: fals
 app.use(passport.initialize())
 app.use(passport.session())
 app.use('/api/admin', adminRouter)
-
+app.use('/api/order', orderRouter)
+app.use('/api/staff', staffRouter)
 
 // app.use((req, res , next)=>{
 //     res.status(500).json({
@@ -36,3 +39,5 @@ mongoose.connect(process.env.DB_URI).then(()=>{
     console.log('app is listening to port', PORT)
 })}).catch((error)=>{console.log(`error connecting to database, ${error.message}`);
 })
+
+

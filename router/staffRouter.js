@@ -1,9 +1,12 @@
-const { createStaff, getAllStaff, getOneStaff } = require('../controller/staff')
-
 const router = require('express').Router()
 
-router.post('/create-staff', createStaff);
-router.get('/staffs', getAllStaff);
-router.get('/staffs/:id', getOneStaff);
+const { createStaff, getAllStaff, getOneStaff, updateStaff, deleteStaff } = require('../controller/staffController');
+const { checkAdmin } = require('../middleware/validation');
+
+router.post('/create-staff', checkAdmin, createStaff);
+router.get('/staffs', checkAdmin, getAllStaff);
+router.get('/staffs/:id', checkAdmin, getOneStaff);
+router.put('/staffs/:id', checkAdmin, updateStaff);
+router.delete('/staffs/:id', checkAdmin, deleteStaff);
 
 module.exports = router;
