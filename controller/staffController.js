@@ -8,7 +8,7 @@ exports.createStaff = async (req, res) => {
         const {id} = req.user;
         const { firstName, lastName, email, phoneNumber, password, address } = req.body;
         const existingStaff = await staffModel.findOne({ email: email.toLowerCase() });
-        const generatedStaffId = `SC-${otp.generate(6, { lowerCase: false, upperCase: true, specialChars: false, alphabets: true, digits: true })}`;
+        const generatedStaffId = `#SC-${otp.generate(6, { lowerCase: false, upperCase: true, specialChars: false, alphabets: true, digits: true })}-${Math.floor(Math.random() * 100)}`;
 
         if (existingStaff) {
             return res.status(400).json({
@@ -16,7 +16,6 @@ exports.createStaff = async (req, res) => {
             })
         };
 
-        const hash = await bcrypt.hash(password, await bcrypt.genSalt(10))
         const staff = await staffModel.create({
             adminId: id,
             staffId: generatedStaffId,
@@ -25,8 +24,7 @@ exports.createStaff = async (req, res) => {
             email,
             address,
             employmentDate: new Date(Date.now()),
-            phoneNumber,
-            password: hash
+            phoneNumber
         });
 
         res.status(201).json({
@@ -66,10 +64,15 @@ exports.getOneStaff = async (req, res) => {
                 message: 'Staff not found'
             })
         };
+        const data = {
+            PERSONAL_INFO: {firstName: staff.firstName, lastName: staff.lastName, email: staff.email, phoneNumber: staff.phoneNumber, address: staff.address, position: staff.position},
+            EDUCATION_CREDENTIALS: {bscScience: staff.bscScience, schoolAttended: staff.schoolAttended, professionalCerts: staff.professionalCerts},
+            GUARANTOR_INFO: {firstName: staff.guarantorfirstName, lastName: staff.guarantorlastName, email: staff.guarantorEmail, phoneNumber: staff.guarantorPhoneNumber, address: staff.guarantorAddress, relationship: staff.relationship},
+        }
 
         res.status(200).json({
             message: 'staff retrieved successfully',
-            data: staff
+            data
         })
     } catch (error) {
         res.status(500).json({
