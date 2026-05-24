@@ -1,14 +1,26 @@
 const staffModel = require('../models/staff');
 const bcrypt = require('bcrypt')
 const otp = require('otp-generator')
+const generatedStaffId = `#SCS-${otp.generate(6, { 
+    lowerCase: false, upperCase: true, 
+    specialChars: false, 
+    alphabets: true, 
+    digits: true })}-${Math.floor(Math.random() * 100)}`;
 
 
 exports.createStaff = async (req, res) => {
     try {
         const {id} = req.user;
-        const { firstName, lastName, email, phoneNumber, password, address } = req.body;
+        const { 
+            firstName, lastName, 
+            email, phoneNumber, address, 
+            position, bscScience, 
+            schoolAttended, professionalCerts, 
+            guarantorfirstName, guarantorlastName, 
+            guarantorEmail, guarantorPhoneNumber, 
+            guarantorAddress, relationship } = req.body;
+
         const existingStaff = await staffModel.findOne({ email: email.toLowerCase() });
-        const generatedStaffId = `#SC-${otp.generate(6, { lowerCase: false, upperCase: true, specialChars: false, alphabets: true, digits: true })}-${Math.floor(Math.random() * 100)}`;
 
         if (existingStaff) {
             return res.status(400).json({
@@ -23,8 +35,18 @@ exports.createStaff = async (req, res) => {
             lastName,
             email,
             address,
+            position,
             employmentDate: new Date(Date.now()),
-            phoneNumber
+            phoneNumber,
+            bscScience,
+            schoolAttended,
+            professionalCerts,
+            guarantorfirstName,
+            guarantorlastName,
+            guarantorEmail,
+            guarantorPhoneNumber,
+            guarantorAddress,
+            relationship
         });
 
         res.status(201).json({
@@ -42,9 +64,33 @@ exports.createStaff = async (req, res) => {
 exports.getAllStaff = async (req, res) => {
     try {
         const staffs = await staffModel.find();
+        const staffList = staffs.map(staff => ({
+            PERSONAL_INFO: {
+                firstName: staff.firstName, 
+                lastName: staff.lastName, 
+                email: staff.email, 
+                phoneNumber: staff.phoneNumber, 
+                address: staff.address, 
+                position: staff.position
+            },
+            EDUCATION_CREDENTIALS: {
+                bscScience: staff.bscScience, 
+                schoolAttended: staff.schoolAttended, 
+                professionalCerts: staff.professionalCerts
+            },
+            GUARANTOR_INFO: {
+                firstName: staff.guarantorfirstName, 
+                lastName: staff.guarantorlastName, 
+                email: staff.guarantorEmail, 
+                phoneNumber: staff.guarantorPhoneNumber, 
+                address: staff.guarantorAddress, 
+                relationship: staff.relationship
+            }
+        }));
+
         res.status(200).json({
             message: 'All staffs retrieved successfully',
-            data: staffs
+            data: staffList
         })
     } catch (error) {
         res.status(500).json({
@@ -65,9 +111,27 @@ exports.getOneStaff = async (req, res) => {
             })
         };
         const data = {
-            PERSONAL_INFO: {firstName: staff.firstName, lastName: staff.lastName, email: staff.email, phoneNumber: staff.phoneNumber, address: staff.address, position: staff.position},
-            EDUCATION_CREDENTIALS: {bscScience: staff.bscScience, schoolAttended: staff.schoolAttended, professionalCerts: staff.professionalCerts},
-            GUARANTOR_INFO: {firstName: staff.guarantorfirstName, lastName: staff.guarantorlastName, email: staff.guarantorEmail, phoneNumber: staff.guarantorPhoneNumber, address: staff.guarantorAddress, relationship: staff.relationship},
+             PERSONAL_INFO: {
+                firstName: staff.firstName, 
+                lastName: staff.lastName, 
+                email: staff.email, 
+                phoneNumber: staff.phoneNumber, 
+                address: staff.address, 
+                position: staff.position
+            },
+            EDUCATION_CREDENTIALS: {
+                bscScience: staff.bscScience, 
+                schoolAttended: staff.schoolAttended, 
+                professionalCerts: staff.professionalCerts
+            },
+            GUARANTOR_INFO: {
+                firstName: staff.guarantorfirstName, 
+                lastName: staff.guarantorlastName, 
+                email: staff.guarantorEmail, 
+                phoneNumber: staff.guarantorPhoneNumber, 
+                address: staff.guarantorAddress, 
+                relationship: staff.relationship
+            }
         }
 
         res.status(200).json({

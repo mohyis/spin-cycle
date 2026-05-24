@@ -1,11 +1,16 @@
-const customerModel = require('../model/customerModel')
+const customerModel = require('../models/customer')
+const otp = require('otp-generator');
+const generatedCustomerId = `#SCC-${otp.generate(6, { lowerCase: false, upperCase: true, specialChars: false, alphabets: true, digits: true })}-${Math.floor(Math.random() * 100)}`;
+
 
 exports.createCustomer = async (req, res, next) => {
     try {
+        
         const {id} = req.user;
         const { firstName, lastName, address, email, phoneNumber } = req.body
         const customer = await customerModel.create({
             adminId: id,
+            customerId: generatedCustomerId,
             firstName,
             lastName,
             address,
@@ -14,36 +19,6 @@ exports.createCustomer = async (req, res, next) => {
         })
         res.status(201).json({
             message: 'Customer created successfully',
-            customer
-        })
-    } catch (error) {
-        next(error)
-    }
-};
-
-exports.getAllCustomers = async (req, res, next) => {
-    try {
-        const customers = await customerModel.find();   
-        res.status(200).json({
-            message: 'Customers retrieved successfully',
-            customers
-        })
-    } catch (error) {
-        next(error)
-    }   
-};
-
-exports.getOneCustomer = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const customer = await customerModel.findById(id);
-        if (!customer) {
-            return res.status(404).json({
-                message: 'Customer not found'
-            })
-        };  
-            res.status(200).json({  
-            message: 'Customer retrieved successfully',
             customer
         })
     } catch (error) {
@@ -106,4 +81,21 @@ exports.updateCustomer = async (req, res, next) => {
      } catch (error) {
       next(error)
     }
+};
+
+exports.deleteCustomer = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const customer = await customerModel.findByIdAndDelete(id);
+        if (!customer) {
+            return res.status(404).json({
+                message: 'Customer not found'
+            })
+        }
+        res.status(200).json({
+            message: 'Customer deleted successfully'
+        })
+    } catch (error) {
+        next(error)
+    }   
 };

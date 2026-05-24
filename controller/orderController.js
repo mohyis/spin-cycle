@@ -21,7 +21,7 @@ exports.createSchedule = async(req,res,next)=>{
         deliveryMode, 
         paymentMode,
         item, specification, 
-        amount, quantity, 
+        amountPaid, quantity, 
         note } = req.body;
     if(!firstName || !pickUpDate || !pickUpTime || !email || !address || !phoneNumber || !deliveryMode || !paymentMode){
         return res.status(400).json({
@@ -46,7 +46,7 @@ exports.createSchedule = async(req,res,next)=>{
         deliveryDate: setReady,
         item,
         specification,
-        amount,
+        amountPaid,
         quantity,
         bookingDate: new Date(Date.now()),
         readyDate: setReady,
@@ -155,7 +155,7 @@ exports.createOrder = async(req,res,next)=>{
     try {
         const {id} = req.user;
         const cusId = req.params.id
-        const { pickUpDate, pickUpTime, deliveryMode, paymentMode, item, specification, amount, quantity, address } = req.body 
+        const { pickUpDate, pickUpTime, deliveryMode, paymentMode, item, specification, amountPaid, quantity, address, note } = req.body 
         
 
         const customer = await customerModel.findById(cusId)
@@ -176,7 +176,7 @@ exports.createOrder = async(req,res,next)=>{
             deliveryDate: setReady,
             item,
             specification,
-            amount,
+            amountPaid,
             quantity,
             bookingDate: new Date(Date.now()),
             readyDate: setReady,

@@ -31,7 +31,8 @@ exports.authenticator = async(req,res,next)=>{
 
 
 exports.checkAdmin = async(req,res,next)=>{
-    const token = req.headers.authorization.split(' ')[1]
+    const auth = req.headers.authorization;
+    const token = auth.split(' ')[1];
 
     if(!token){
         return next({

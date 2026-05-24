@@ -5,6 +5,11 @@ const customerSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'admin',
     },
+    customerId: {
+        type: String,
+        required: true,
+        unique: true
+    },
      firstName: {
         type: String,  
         required: true
@@ -13,20 +18,17 @@ const customerSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-     address: {
+    address: {
         type: String,
         required: true      
     },
-    pickUpTime: {
-        type: Date
-    },
     email: {
         type: String,
-        require: true
+        required: true
     },
     phoneNumber: {
         type: String,
-        require: true
+        required: true
     }
 })
 

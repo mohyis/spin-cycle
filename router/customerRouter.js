@@ -3,7 +3,7 @@ const { createCustomer, getAllCustomers, getOneCustomer, updateCustomer, deleteC
 
 const { checkAdmin } = require('../middleware/validation');
 
-router.post('/create-customer', checkAdmin, createCustomer);
+router.post('/register', checkAdmin, createCustomer);
 router.get('/customers', checkAdmin, getAllCustomers);
 router.get('/customers/:id', checkAdmin, getOneCustomer);
 router.put('/customers/:id', checkAdmin, updateCustomer);

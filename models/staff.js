@@ -36,7 +36,7 @@ const staffSchema = new mongoose.Schema({
         require: true
     },
     phoneNumber: {
-        type: Number,
+        type: String,
         require: true
     },
     status: {
@@ -65,7 +65,7 @@ const staffSchema = new mongoose.Schema({
         type: String,
     },
     guarantorPhoneNumber: {
-        type: Number,
+        type: String,
     },
     guarantorEmail: {
         type: String,

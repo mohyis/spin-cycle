@@ -27,11 +27,11 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     pickUpDate: {
-        type: Date,
+        type: String,
         required: true
     },
     pickUpTime: {
-        type: Date,
+        type: String,
         required: true
     },
     email: {
@@ -54,11 +54,27 @@ const orderSchema = new mongoose.Schema({
         type: String,  
         required: true
     },
-    amount: {
+    amountPaid: {
+        type: Number,  
+        required: true
+    },
+    amountPaid: {
+        type: Number,  
+        required: true
+    },
+    amountPaid: {
+        type: Number,  
+        required: true
+    },
+    amountPaid: {
         type: Number,  
         required: true
     },
     quantity: {
+        type: Number,  
+        required: true
+    },
+    amountPaid: {
         type: Number,  
         required: true
     },
