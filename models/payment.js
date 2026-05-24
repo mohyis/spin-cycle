@@ -10,42 +10,25 @@ const paymentSchema = new mongoose.Schema({
         ref: 'customer',
     },
     orderId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'order',
+        type: String,
     },
     paymentId: {
         type: String,  
         required: true
     },
     item: {
-        type: String,  
+        type: String,
         required: true
     },
     specification: {
         type: String,  
         required: true
     },
-    unitPrice: {
-        type: Number,
-        required: true
-    },
     quantity: {
         type: Number,  
         required: true
     },
-    subTotal: {
-        type: Number,  
-        required: true
-    },
-    totalAmount: {
-        type: Number,  
-        required: true
-    },
-    amountPaid: {
-        type: Number,  
-        required: true
-    },
-    balance: {
+    amount: {
         type: Number,  
         required: true
     },
@@ -57,6 +40,11 @@ const paymentSchema = new mongoose.Schema({
     paymentDate: {
         type: Date,
         required: true
+    },
+    reference: {
+        type: String,
+        required: true,
+        unique: true
     },
     status: {
         type: String,

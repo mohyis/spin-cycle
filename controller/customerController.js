@@ -8,6 +8,14 @@ exports.createCustomer = async (req, res, next) => {
         
         const {id} = req.user;
         const { firstName, lastName, address, email, phoneNumber } = req.body
+        const existingCustomer = await customerModel.findOne({ email: email.toLowerCase() });
+
+        if (existingCustomer) {
+            return res.status(400).json({
+                message: 'Customer already exist'
+            })
+        };
+        
         const customer = await customerModel.create({
             adminId: id,
             customerId: generatedCustomerId,
