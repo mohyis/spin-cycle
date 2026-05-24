@@ -16,7 +16,7 @@ exports.createStaff = async (req, res) => {
             email, phoneNumber, address, 
             position, bscScience, 
             schoolAttended, professionalCerts, 
-            guarantorfirstName, guarantorlastName, 
+            guarantorFirstName, guarantorLastName, 
             guarantorEmail, guarantorPhoneNumber, 
             guarantorAddress, relationship } = req.body;
 
@@ -41,41 +41,17 @@ exports.createStaff = async (req, res) => {
             bscScience,
             schoolAttended,
             professionalCerts,
-            guarantorfirstName,
-            guarantorlastName,
+            guarantorFirstName,
+            guarantorLastName,
             guarantorEmail,
             guarantorPhoneNumber,
             guarantorAddress,
             relationship
         });
 
-        const data = {
-             PERSONAL_INFO: {
-                firstName: staff.firstName, 
-                lastName: staff.lastName, 
-                email: staff.email, 
-                phoneNumber: staff.phoneNumber, 
-                address: staff.address, 
-                position: staff.position
-            },
-            EDUCATION_CREDENTIALS: {
-                bscScience: staff.bscScience, 
-                schoolAttended: staff.schoolAttended, 
-                professionalCerts: staff.professionalCerts
-            },
-            GUARANTOR_INFO: {
-                firstName: staff.guarantorfirstName, 
-                lastName: staff.guarantorlastName, 
-                email: staff.guarantorEmail, 
-                phoneNumber: staff.guarantorPhoneNumber, 
-                address: staff.guarantorAddress, 
-                relationship: staff.relationship
-            }
-        }
-
         res.status(201).json({
             message: 'Staff created successfully',
-            data
+            data: staff
         })
     } catch (error) {
         res.status(500).json({
@@ -89,7 +65,6 @@ exports.getAllStaff = async (req, res) => {
     try {
         const staffs = await staffModel.find();
         const staffList = staffs.map(staff => ({
-            staffId: staff.staffId,
             PERSONAL_INFO: {
                 firstName: staff.firstName, 
                 lastName: staff.lastName, 
@@ -104,8 +79,8 @@ exports.getAllStaff = async (req, res) => {
                 professionalCerts: staff.professionalCerts
             },
             GUARANTOR_INFO: {
-                firstName: staff.guarantorfirstName, 
-                lastName: staff.guarantorlastName, 
+                firstName: staff.guarantorFirstName, 
+                lastName: staff.guarantorLastName, 
                 email: staff.guarantorEmail, 
                 phoneNumber: staff.guarantorPhoneNumber, 
                 address: staff.guarantorAddress, 
@@ -136,7 +111,6 @@ exports.getOneStaff = async (req, res) => {
             })
         };
         const data = {
-             staffId: staff.staffId,
              PERSONAL_INFO: {
                 firstName: staff.firstName, 
                 lastName: staff.lastName, 
@@ -151,8 +125,8 @@ exports.getOneStaff = async (req, res) => {
                 professionalCerts: staff.professionalCerts
             },
             GUARANTOR_INFO: {
-                firstName: staff.guarantorfirstName, 
-                lastName: staff.guarantorlastName, 
+                firstName: staff.guarantorFirstName, 
+                lastName: staff.guarantorLastName, 
                 email: staff.guarantorEmail, 
                 phoneNumber: staff.guarantorPhoneNumber, 
                 address: staff.guarantorAddress, 

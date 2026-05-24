@@ -37,6 +37,53 @@ app.use('/api/payment', paymentRouter)
 //     })
 // })
 
+const swaggerDefinition = {
+    openapi: '3.0.0',
+    info: {
+        title: 'Spin Cycle Laundry Service API',
+        version: '2.0.0',
+        description: 
+            `This is a REST API application made with Express. It retrieves data from JSONPlaceholder.
+             The base URL is: http://localhost:5907`,
+        license: {
+            name: 'Official URL',
+            url: 'https://google.com',
+        },
+        contact: {
+            name: 'JSONPlaceholder',
+            url: 'https://jsonplaceholder.typicode.com',
+        },
+    },
+    servers: [
+        {
+            url: 'http://localhost:5907',
+            description: 'development server',
+        },
+    ],
+    security: [
+        {
+            bearerAuth: []
+        }
+    ],
+    components: {
+        securitySchemes: {
+            bearerAuth: {
+                type: 'http',
+                scheme: 'bearer',
+                bearerFormat: 'JWT'
+            }
+        }
+    }
+};
+
+const options = {
+    swaggerDefinition,
+    apis: ['./router/*.js']
+}
+
+const swaggerSpec = swaggerJsdoc(options);
+app.use('/api/v1/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
 app.use((error, req, res , next)=>{
     res.status(500).json({
         message: error.message, 

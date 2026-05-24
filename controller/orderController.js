@@ -144,7 +144,7 @@ exports.assignStaffToSchedule = async(req,res,next)=>{
 
 
 // To get all completed schedules that has been delivered by staff /picked up by customer Or the orders that have been assigned to a staff for delivery/pickup.
-exports.getAllCompletedSchedules = async(req,res,next)=>{
+exports.getCompletedOrderSchedules = async(req,res,next)=>{
     try {
         const schedules = await orderModel.find({ status: 'completed' })
         const requiredSchedules = schedules.map(schedule => {

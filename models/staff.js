@@ -52,10 +52,10 @@ const staffSchema = new mongoose.Schema({
     professionalCerts: {
         type: String,
     },
-    guarantorfirstName: {
+    guarantorFirstName: {
         type: String,
     },
-    guarantorlastName: {
+    guarantorLastName: {
         type: String,
     },
     guarantorAddress: {
