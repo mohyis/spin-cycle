@@ -54,27 +54,16 @@ const orderSchema = new mongoose.Schema({
         type: String,  
         required: true
     },
-    amountPaid: {
-        type: Number,  
+    unitPrice: {
+        type: Number,
+        default: 500,
         required: true
     },
-    amountPaid: {
-        type: Number,  
-        required: true
-    },
-    amountPaid: {
-        type: Number,  
-        required: true
-    },
-    amountPaid: {
+    amount: {
         type: Number,  
         required: true
     },
     quantity: {
-        type: Number,  
-        required: true
-    },
-    amountPaid: {
         type: Number,  
         required: true
     },
