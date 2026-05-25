@@ -5,7 +5,7 @@ const staffSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'admin',
     },
-    idstaff: {
+    staffId: {
         type: String,
         unique: true
     },
@@ -36,7 +36,7 @@ const staffSchema = new mongoose.Schema({
         require: true
     },
     phoneNumber: {
-        type: Number,
+        type: String,
         require: true
     },
     status: {
@@ -52,10 +52,10 @@ const staffSchema = new mongoose.Schema({
     professionalCerts: {
         type: String,
     },
-    guarantorfirstName: {
+    guarantorFirstName: {
         type: String,
     },
-    guarantorlastName: {
+    guarantorLastName: {
         type: String,
     },
     guarantorAddress: {
@@ -65,7 +65,7 @@ const staffSchema = new mongoose.Schema({
         type: String,
     },
     guarantorPhoneNumber: {
-        type: Number,
+        type: String,
     },
     guarantorEmail: {
         type: String,

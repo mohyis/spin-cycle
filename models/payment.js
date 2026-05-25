@@ -9,20 +9,19 @@ const paymentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'customer',
     },
+    orderId: {
+        type: String,
+    },
     paymentId: {
         type: String,  
         required: true
     },
     item: {
-        type: String,  
+        type: String,
         required: true
     },
     specification: {
         type: String,  
-        required: true
-    },
-    unitPrice: {
-        type: Number,
         required: true
     },
     quantity: {
@@ -41,6 +40,11 @@ const paymentSchema = new mongoose.Schema({
     paymentDate: {
         type: Date,
         required: true
+    },
+    reference: {
+        type: String,
+        required: true,
+        unique: true
     },
     status: {
         type: String,

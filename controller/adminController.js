@@ -1,4 +1,4 @@
-const userModel = require('../models/admin')
+const adminModel = require('../models/admin')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
@@ -16,7 +16,7 @@ exports.register = async(req, res)=>{
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
-        const user = await userModel.create({
+        const user = await adminModel.create({
             firstName,
             lastName,
             email,
@@ -46,7 +46,7 @@ exports.register = async(req, res)=>{
 exports.login = async(req,res, next)=>{
     try {
         const {email, password} = req.body
-        const user  = await userModel.findOne({email})
+        const user  = await adminModel.findOne({email})
         if(!user){
             return next({
         message: 'user not found', 
@@ -96,7 +96,7 @@ exports.login = async(req,res, next)=>{
         const token = await jwt.sign({ 
             id: user._id, email: user.email}, 
             process.env.JWT_SECRET, 
-            { expiresIn: '1 hour'})
+            { expiresIn: '1 day' })
 
         res.status(200).json({
             message: 'login successfully',
