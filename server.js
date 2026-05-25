@@ -1,8 +1,9 @@
-const express = require('express')
-require('dotenv').config()
+require('dotenv').config();
+const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport')
-const userRouter = require('./router/userRouter')
+const adminRouter = require('./router/adminRouter')
+const staffRouter = require('./router/staffRouter')
 const expressSession = require('express-session')
 const app = express()
 const PORT = 5907
@@ -13,7 +14,8 @@ app.use(express.json())
 app.use(expressSession({secret: "mohyis", saveUninitialized: false, resave: false}))
 app.use(passport.initialize())
 app.use(passport.session())
-app.use('/api/v1/user', userRouter)
+app.use('/api/admin', adminRouter)
+app.use('/api/v1/staff', staffRouter)
 
 
 // app.use((req, res , next)=>{

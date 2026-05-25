@@ -1,4 +1,4 @@
-const { createStaff, getAllStaff, getOneStaff } = require('../controller/staff')
+const { createStaff, getAllStaff, getOneStaff } = require('../controller/staffController')
 
 const router = require('express').Router()
 

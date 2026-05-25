@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
-const userModel = require('../models/user');
-const pickerModel = require('../models/user');
+const userModel = require('../models/admin');
+const pickerModel = require('../models/admin');
 
 exports.authenticator = async(req,res,next)=>{
    try {
