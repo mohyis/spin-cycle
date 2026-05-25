@@ -1,7 +1,9 @@
-const express = require('express')
-require('dotenv').config()
+require('dotenv').config();
+const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport')
+// const adminRouter = require('./router/adminRouter')
+// const staffRouter = require('./router/staffRouter')
 const swaggerUi = require('swagger-ui-express')
 const swaggerJsdoc = require('swagger-jsdoc')
 const cors = require('cors')

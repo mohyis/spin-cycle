@@ -2,6 +2,7 @@ const router = require('express').Router()
 const passport = require('passport')
 const { register, login } = require('../controller/adminController')
 
+router.post('/', register)
 
 
 /**

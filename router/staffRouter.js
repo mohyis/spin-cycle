@@ -1,3 +1,5 @@
+// const { createStaff, getAllStaff, getOneStaff } = require('../controller/staffController')
+
 const router = require('express').Router()
 
 const { createStaff, getAllStaff, getOneStaff, updateStaff, deleteStaff } = require('../controller/staffController');

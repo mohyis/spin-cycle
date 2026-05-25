@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
 
 const adminSchema = new mongoose.Schema({
-     firstName: {
+    firstName: {
         type: String,
         required: true
     },
-     lastName: {
+    lastName: {
         type: String,
         required: true
     },
@@ -21,8 +21,18 @@ const adminSchema = new mongoose.Schema({
         type: String,
         default: "admin",
         require: true
+    },
+    profilePicture: {
+        url: {
+            type: String,
+            require: true
+        },
+        public_id: {
+            type: String,
+            require: true
+        }
     }
-}, {timestamps: true})
+}, { timestamps: true })
 
 const adminModel = mongoose.model('admin', adminSchema)
 
