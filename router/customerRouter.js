@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const { createCustomer, getAllCustomers, getOneCustomer, updateCustomer, deleteCustomer } = require('../controller/customerController');
+const { createCustomerValidator } = require('../middleware/joiValidation');
 
 const { checkAdmin } = require('../middleware/validation');
 
@@ -117,7 +118,7 @@ const { checkAdmin } = require('../middleware/validation');
  *                   type: string
  *                   example: Customer already exist
  */
-router.post('/register', checkAdmin, createCustomer);
+router.post('/register',createCustomerValidator, checkAdmin, createCustomer);
 
 /**
  * @swagger

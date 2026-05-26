@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { createOrder, getAllOrders, getOneOrder, updateOrderStatus, deleteOrder, getCompletedOrderSchedules } = require('../controller/orderController');
 const { createSchedule, getAllCompletedOrders, getOneSchedule, deleteSchedule, assignStaffToSchedule } = require('../controller/orderController');
+const { createScheduleValidator, updateOrderStatusValidator } = require('../middleware/joiValidation');
 const {scheduleRateLimiter,} = require('../middleware/rateLimiter');
 
 const { checkAdmin } = require('../middleware/validation');
@@ -336,7 +337,7 @@ router.get('/orders/:id', checkAdmin, getOneOrder);
  *                   type: string
  *                   example: Order not found
  */
-router.put('/order-status/:id', checkAdmin, updateOrderStatus);
+router.put('/order-status/:id', updateOrderStatusValidator ,checkAdmin, updateOrderStatus);
 
 
 router.delete('/orders/:id', checkAdmin, deleteOrder);
@@ -433,7 +434,7 @@ router.delete('/orders/:id', checkAdmin, deleteOrder);
  *                   type: string
  *                   example: Please fill in all required fields
  */
-router.post('/create-schedule', scheduleRateLimiter, createSchedule);
+router.post('/create-schedule', createScheduleValidator, scheduleRateLimiter, createSchedule);
 
 /**
  * @swagger

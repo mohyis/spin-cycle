@@ -21,6 +21,13 @@ const adminSchema = new mongoose.Schema({
         type: String,
         default: "admin",
         require: true
+    },
+    loginAttempts: {
+        type: Number,
+        default: 0
+    },
+    lockUntil: {
+        type: Date
     }
 }, {timestamps: true})
 

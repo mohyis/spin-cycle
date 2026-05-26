@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { createMessage, getAllMessages, getOneMessage, deleteMessage } = require('../controller/messageController');
+const { createMessageValidator } = require('../middleware/joiValidation');
 const { checkAdmin } = require('../middleware/validation');
 
 /**
@@ -84,7 +85,7 @@ const { checkAdmin } = require('../middleware/validation');
  *                 data:
  *                   $ref: '#/components/schemas/Message'
  */
-router.post('/message', createMessage);
+router.post('/message', createMessageValidator ,createMessage);
 
 /**
  * @swagger

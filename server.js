@@ -5,6 +5,7 @@ const passport = require('passport')
 const swaggerUi = require('swagger-ui-express')
 const swaggerJsdoc = require('swagger-jsdoc')
 const cors = require('cors')
+const redisClient = require('./redisConfig/redis')
 const expressSession = require('express-session')
 const app = express()
 const PORT = 5907
@@ -92,9 +93,15 @@ app.use((error, req, res , next)=>{
 })
 
 
+
 mongoose.connect(process.env.DB_URI).then(()=>{
-    console.log('database connected successfully'), app.listen(PORT, ()=>{
-    
+    redisClient.connect().then(()=>{
+    console.log('redis client connected successfully')
+}).catch((err)=>{
+    console.log('redis client connection error', err)
+})
+    console.log('database connected successfully'),
+     app.listen(PORT, ()=>{
     console.log('app is listening to port', PORT)
 })}).catch((error)=>{console.log(`error connecting to database, ${error.message}`);
 })

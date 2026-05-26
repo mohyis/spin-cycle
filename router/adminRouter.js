@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const passport = require('passport')
-const { register, login } = require('../controller/adminController')
+const { register, login, logout } = require('../controller/adminController')
+const { loginValidator, signupValidator } = require('../middleware/joiValidation')
+const { authenticator } = require('../middleware/validation')
 
 
 
@@ -8,7 +10,7 @@ const { register, login } = require('../controller/adminController')
  * @swagger
  * tags:
  *   name: Admin
- *   description: admin authentication and management
+ *   description: Admin authentication and management
  */
 
 /**
@@ -38,11 +40,20 @@ const { register, login } = require('../controller/adminController')
  *           type: string
  *           description: Admin password (hashed)
  *           example: $2b$10$hashedpasswordhere
+ *         loginAttempts:
+ *           type: number
+ *           description: Number of consecutive failed login attempts
+ *           example: 0
+ *         lockUntil:
+ *           type: string
+ *           format: date-time
+ *           description: Timestamp until which the account is locked after 5 failed attempts
+ *           example: "2026-05-24T10:02:00.000Z"
  */
 
 /**
  * @swagger
- * /api/admin/register:
+ * /api/v1/admin/register:
  *   post:
  *     tags:
  *       - Admin
@@ -54,6 +65,12 @@ const { register, login } = require('../controller/adminController')
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - firstName
+ *               - lastName
+ *               - email
+ *               - password
+ *               - confirmPassword
  *             properties:
  *               firstName:
  *                 type: string
@@ -66,13 +83,13 @@ const { register, login } = require('../controller/adminController')
  *                 example: admin@example.com
  *               password:
  *                 type: string
- *                 example: password123
+ *                 example: Password@123
  *               confirmPassword:
  *                 type: string
- *                 example: password123
+ *                 example: Password@123
  *     responses:
  *       201:
- *         description: account created successfully
+ *         description: Account created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -86,38 +103,56 @@ const { register, login } = require('../controller/adminController')
  *                   properties:
  *                     firstName:
  *                       type: string
+ *                       example: John
  *                     lastName:
  *                       type: string
+ *                       example: Doe
  *                     email:
  *                       type: string
+ *                       example: admin@example.com
+ *       400:
+ *         description: Passwords do not match
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: password does not match
  */
 router.post('/register', register)
 
-
 /**
  * @swagger
- * /api/admin/login:
+ * /api/v1/admin/login:
  *   post:
  *     tags:
  *       - Admin
  *     summary: Admin login
- *     description: Login with email and password
+ *     description: >
+ *       Login with email and password. A JWT token is issued on success and stored in Redis
+ *       for the session (expires in 1 day). After 5 consecutive failed attempts the account
+ *       is locked for 2 minutes.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - email
+ *               - password
  *             properties:
  *               email:
  *                 type: string
  *                 example: admin@example.com
  *               password:
  *                 type: string
- *                 example: password123
+ *                 example: Password@123
  *     responses:
  *       200:
- *         description: login successful
+ *         description: Login successful
  *         content:
  *           application/json:
  *             schema:
@@ -126,77 +161,161 @@ router.post('/register', register)
  *                 message:
  *                   type: string
  *                   example: login successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 787674563782983746578439
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     email:
+ *                       type: string
+ *                       example: admin@example.com
  *                 token:
  *                   type: string
  *                   example: jwt.token.here
+ *       400:
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: invalid credentials
+ *       403:
+ *         description: Account locked due to too many failed login attempts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Account locked until 2026-05-24T10:02:00.000Z"
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: user not found
  */
 router.post('/login', login)
 
+/**
+ * @swagger
+ * /api/v1/admin/logout:
+ *   post:
+ *     tags:
+ *       - Admin
+ *     summary: Admin logout
+ *     description: Invalidates the admin session by deleting the JWT token from Redis. Requires admin authentication.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: logout successful
+ */
+router.post('/logout',authenticator, logout)
 
 /**
  * @swagger
- * /api/admin/googleAuth:
+ * /api/v1/admin/googleAuth:
  *   get:
  *     tags:
  *       - Admin
  *     summary: Google authentication
- *     description: Redirects user to Google OAuth login
+ *     description: Redirects the user to Google OAuth login
  *     responses:
  *       302:
  *         description: Redirect to Google auth page
  */
 router.get('/googleAuth', passport.authenticate("google", {scope: ["profile", "email"]}))
 
-
 /**
  * @swagger
- * /api/admin/googleLogin:
+ * /api/v1/admin/googleLogin:
  *   get:
  *     tags:
  *       - Admin
  *     summary: Google login callback
- *     description: Handles Google OAuth callback
+ *     description: Handles the Google OAuth callback and redirects to success or failure route
  *     responses:
- *       200:
- *         description: login success redirect or failure redirect
+ *       302:
+ *         description: Redirects to success or failure route
  */
-router.get('/googleLogin', passport.authenticate("google", {successRedirect: "/api/admin/success", failureRedirect: "/api/admin/failed"}))
+router.get('/googleLogin', passport.authenticate("google", {successRedirect: "/api/user/success", failureRedirect: "/api/user/failed"}))
 
 /**
  * @swagger
- * /api/admin/success:
+ * /api/v1/admin/success:
  *   get:
  *     tags:
  *       - Admin
  *     summary: Google login success
- *     description: Returns logged-in Google user data
+ *     description: Returns the logged-in admin's token from the Google OAuth flow
  *     responses:
  *       200:
- *         description: login successful
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: login successful
+ *                 data:
+ *                   type: string
+ *                   description: JWT token
+ *                   example: jwt.token.here
  */
-router.get('/success', (req, res)=>{
-    res.json({
-        message: "login successful",
-        data: req.user
-    })
+router.get('/success', (req, res) => {
+    res.json({ 
+        message: "login successful", 
+        data: req.user })
 })
 
 /**
  * @swagger
- * /api/admin/failed:
+ * /api/v1/admin/failed:
  *   get:
  *     tags:
  *       - Admin
  *     summary: Google login failed
- *     description: Returns failure message
+ *     description: Returns a failure message when Google OAuth login is unsuccessful
  *     responses:
  *       200:
- *         description: login failed
+ *         description: Login failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: login Failed
  */
-router.get('/failed', (req, res)=>{
-    res.json({
-        message: "login Failed"
-    })
+router.get('/failed', (req, res) => {
+    res.json({ message: "login Failed" })
 })
 
 module.exports = router
