@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const redisClient = require('../redisConfig/redis')
 
 exports.register = async(req, res)=>{
+    req.file;
     try {
         const {firstName, lastName, email, password, confirmPassword} = req.body
 
