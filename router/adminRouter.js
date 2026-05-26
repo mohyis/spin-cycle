@@ -4,8 +4,6 @@ const { register, login, logout } = require('../controller/adminController')
 const { loginValidator, signupValidator } = require('../middleware/joiValidation')
 const { authenticator } = require('../middleware/validation')
 
-router.post('/', register)
-
 
 /**
  * @swagger
