@@ -22,6 +22,10 @@ const adminSchema = new mongoose.Schema({
         default: "admin",
         require: true
     },
+    photo: {
+        url: {
+            type: String,
+            require: true
     imageUrl: {
         type: String,
         require: true

@@ -89,7 +89,7 @@ app.use('/api/v1/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.use((error, req, res , next)=>{
     res.status(500).json({
-        message: error.message, 
+        message: error, 
         status: error.statusCode
     })
 })

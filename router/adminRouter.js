@@ -1,5 +1,9 @@
 const router = require('express').Router()
 const passport = require('passport')
+const { register, login } = require('../controller/adminController')
+const { upload } = require('../middleware/multer')
+
+//router.post('/', register)
 const { register, login, logout } = require('../controller/adminController')
 const { loginValidator, signupValidator } = require('../middleware/joiValidation')
 const { authenticator } = require('../middleware/validation')
@@ -120,7 +124,10 @@ const { authenticator } = require('../middleware/validation')
  *                   type: string
  *                   example: password does not match
  */
-router.post('/register', register)
+router.post('/register', upload.single('photo'), register)
+
+
+
 
 /**
  * @swagger
@@ -247,7 +254,7 @@ router.post('/logout',authenticator, logout)
  *       302:
  *         description: Redirect to Google auth page
  */
-router.get('/googleAuth', passport.authenticate("google", {scope: ["profile", "email"]}))
+router.get('/googleAuth', passport.authenticate("google", { scope: ["profile", "email"] }))
 
 /**
  * @swagger
@@ -288,9 +295,10 @@ router.get('/googleLogin', passport.authenticate("google", {successRedirect: "/a
  *                   example: jwt.token.here
  */
 router.get('/success', (req, res) => {
-    res.json({ 
-        message: "login successful", 
-        data: req.user })
+    res.json({
+        message: "login successful",
+        data: req.user
+    })
 })
 
 /**
@@ -314,7 +322,9 @@ router.get('/success', (req, res) => {
  *                   example: login Failed
  */
 router.get('/failed', (req, res) => {
-    res.json({ message: "login Failed" })
+    res.json({
+        message: "login Failed"
+    })
 })
 
 module.exports = router
