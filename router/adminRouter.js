@@ -1,8 +1,9 @@
 const router = require('express').Router()
 const passport = require('passport')
 const { register, login } = require('../controller/adminController')
+const { upload } = require('../middleware/multer')
 
-router.post('/', register)
+//router.post('/', register)
 
 
 /**
@@ -92,7 +93,10 @@ router.post('/', register)
  *                     email:
  *                       type: string
  */
-router.post('/register', register)
+router.post('/register', upload.single('photo'), register)
+
+
+
 
 
 /**
@@ -146,7 +150,7 @@ router.post('/login', login)
  *       302:
  *         description: Redirect to Google auth page
  */
-router.get('/googleAuth', passport.authenticate("google", {scope: ["profile", "email"]}))
+router.get('/googleAuth', passport.authenticate("google", { scope: ["profile", "email"] }))
 
 
 /**
@@ -161,7 +165,7 @@ router.get('/googleAuth', passport.authenticate("google", {scope: ["profile", "e
  *       200:
  *         description: login success redirect or failure redirect
  */
-router.get('/googleLogin', passport.authenticate("google", {successRedirect: "/api/admin/success", failureRedirect: "/api/admin/failed"}))
+router.get('/googleLogin', passport.authenticate("google", { successRedirect: "/api/admin/success", failureRedirect: "/api/admin/failed" }))
 
 /**
  * @swagger
@@ -175,7 +179,7 @@ router.get('/googleLogin', passport.authenticate("google", {successRedirect: "/a
  *       200:
  *         description: login successful
  */
-router.get('/success', (req, res)=>{
+router.get('/success', (req, res) => {
     res.json({
         message: "login successful",
         data: req.user
@@ -194,7 +198,7 @@ router.get('/success', (req, res)=>{
  *       200:
  *         description: login failed
  */
-router.get('/failed', (req, res)=>{
+router.get('/failed', (req, res) => {
     res.json({
         message: "login Failed"
     })

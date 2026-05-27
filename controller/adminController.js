@@ -1,13 +1,27 @@
 const adminModel = require('../models/admin')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const cloudinary = require('../config/cloudinary')
+const fs = require('fs')
 
-exports.register = async(req, res)=>{
-    req.file;
+
+exports.register = async (req, res) => {
+    const file = req.file;
+    console.log("file", file)
     try {
-        const {firstName, lastName, email, password, confirmPassword} = req.body
+        const { firstName, lastName, email, password, confirmPassword } = req.body
+        console.log('ada')
+        let result;
 
-        if(password !== confirmPassword){
+        if (req.file) {
+            console.log('req file', req.file)
+        
+            result = await cloudinary.uploader.upload(file.path)
+            console.log('cloudinary result', result)
+            fs.unlinkSync(file.path)
+        }
+
+        if (password !== confirmPassword) {
             return res.status(400).json({
                 message: 'password does not match'
             })
@@ -20,7 +34,11 @@ exports.register = async(req, res)=>{
             firstName,
             lastName,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            photo: {
+                url: result.secure_url,
+                public_id: result.public_id
+            }
         })
 
         const data = {
@@ -33,8 +51,11 @@ exports.register = async(req, res)=>{
             message: 'account created',
             data
         })
-        
+
     } catch (error) {
+        console.log(error);
+
+        fs.unlinkSync(file.path)
         res.status(500).json(
             {
                 message: error.message
@@ -43,24 +64,24 @@ exports.register = async(req, res)=>{
     }
 }
 
-exports.login = async(req,res, next)=>{
+exports.login = async (req, res, next) => {
     try {
-        const {email, password} = req.body
-        const user  = await adminModel.findOne({email})
-        if(!user){
+        const { email, password } = req.body
+        const user = await adminModel.findOne({ email })
+        if (!user) {
             return next({
-        message: 'user not found', 
-        statusCode: 404
-      })
+                message: 'user not found',
+                statusCode: 404
+            })
         };
 
-    //     if(user.isVerified == false){
-    //         return next({
-    //     message: 'please verify your email', 
-    //     statusCode: 400
-    //   })
+        //     if(user.isVerified == false){
+        //         return next({
+        //     message: 'please verify your email', 
+        //     statusCode: 400
+        //   })
 
-      //  }
+        //  }
 
         // check if account is locked due to many failed login attempts
 
@@ -72,7 +93,7 @@ exports.login = async(req,res, next)=>{
         // }
 
         const passwordCorrect = await bcrypt.compare(password, user.password)
-        if(!passwordCorrect){
+        if (!passwordCorrect) {
             // increment login attempt and lock account if necessary
 
             // user.loginAttempts += 1;
@@ -81,21 +102,22 @@ exports.login = async(req,res, next)=>{
             //     user.loginAttempts = 0
             // }
 
-        //     await user.save()
-            
+            //     await user.save()
+
             return next({
-        message: 'invalid credentials', 
-        statusCode: 400
-      })
-        }   
+                message: 'invalid credentials',
+                statusCode: 400
+            })
+        }
 
         // reset login attempts on successful login
         // user.loginAttempts = 0;
         // await user.save();
 
-        const token = await jwt.sign({ 
-            id: user._id, email: user.email}, 
-            process.env.JWT_SECRET, 
+        const token = await jwt.sign({
+            id: user._id, email: user.email
+        },
+            process.env.JWT_SECRET,
             { expiresIn: '1 day' })
 
         res.status(200).json({

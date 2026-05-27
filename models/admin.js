@@ -22,7 +22,7 @@ const adminSchema = new mongoose.Schema({
         default: "admin",
         require: true
     },
-    profilePicture: {
+    photo: {
         url: {
             type: String,
             require: true
