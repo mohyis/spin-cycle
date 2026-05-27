@@ -85,7 +85,7 @@ const options = {
 }
 
 const swaggerSpec = swaggerJsdoc(options);
-app.use('/api/v1/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use('/api/admin/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.use((error, req, res , next)=>{
     res.status(500).json({

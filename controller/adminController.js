@@ -126,6 +126,7 @@ exports.login = async (req, res, next) => {
 
             const data = {
             id: user._id,
+            photo: user.photo,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email
