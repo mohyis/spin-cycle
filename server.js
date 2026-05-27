@@ -13,7 +13,7 @@ const app = express()
 const PORT = 5907
 require('./controller/googleAuth')
 
-const allowedOrigins = ['http://localhost:3000', 'https://spin-cycle.onrender.com'];
+const allowedOrigins = ['http://localhost:5173', 'https://spin-cycle.onrender.com'];
 app.use(cors({origin: allowedOrigins}));
 
 const adminRouter = require('./router/adminRouter')
