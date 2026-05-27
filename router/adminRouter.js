@@ -24,6 +24,10 @@ const { authenticator } = require('../middleware/validation')
  *           type: string
  *           description: Admin ID
  *           example: 787674563782983746578439
+ *         photo:
+ *           type: string
+ *           format: uri
+ *           description: Admin profile picture
  *         firstName:
  *           type: string
  *           description: Admin first name
@@ -66,12 +70,16 @@ const { authenticator } = require('../middleware/validation')
  *           schema:
  *             type: object
  *             required:
+ *               - photo
  *               - firstName
  *               - lastName
  *               - email
  *               - password
  *               - confirmPassword
  *             properties:
+ *               photo:
+ *                 type: string
+ *                 example: https://example.com/uploads/admin.jpg
  *               firstName:
  *                 type: string
  *                 example: John
@@ -101,6 +109,9 @@ const { authenticator } = require('../middleware/validation')
  *                 data:
  *                   type: object
  *                   properties:
+ *                     photo:
+ *                       type: string
+ *                       example: https://example.com/uploads/admin.jpg
  *                     firstName:
  *                       type: string
  *                       example: John
