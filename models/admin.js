@@ -26,14 +26,12 @@ const adminSchema = new mongoose.Schema({
         url: {
             type: String,
             require: true
-    imageUrl: {
-        type: String,
-        require: true
         },
-    imagePublicId: {
-        type: String,
-        require: true
-        },
+        public_id: {
+            type: String,
+            require: true
+        }
+    },
     loginAttempts: {
         type: Number,
         default: 0

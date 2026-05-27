@@ -1,11 +1,8 @@
 const router = require('express').Router()
 const passport = require('passport')
-const { register, login } = require('../controller/adminController')
 const { upload } = require('../middleware/multer')
-
-//router.post('/', register)
 const { register, login, logout } = require('../controller/adminController')
-const { loginValidator, signupValidator } = require('../middleware/joiValidation')
+const { loginValidator, registerValidator } = require('../middleware/joiValidation')
 const { authenticator } = require('../middleware/validation')
 
 
@@ -124,7 +121,7 @@ const { authenticator } = require('../middleware/validation')
  *                   type: string
  *                   example: password does not match
  */
-router.post('/register', upload.single('photo'), register)
+router.post('/register', registerValidator ,upload.single('photo'), register)
 
 
 
@@ -216,7 +213,7 @@ router.post('/register', upload.single('photo'), register)
  *                   type: string
  *                   example: user not found
  */
-router.post('/login', login)
+router.post('/login', loginValidator ,login)
 
 /**
  * @swagger
