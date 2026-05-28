@@ -1,6 +1,7 @@
 const orderModel = require('../models/order');
 const customerModel = require('../models/customer')
 const staffModel = require('../models/staff')
+const paymentModel = require('../models/payment')
 const orderId = require('otp-generator');
 const generatedOrderId = `#SC-${orderId.generate(7, { lowerCase: false, upperCase: false, specialChars: false, alphabets: false, digits: true })}`;
 const date = new Date();
@@ -370,9 +371,37 @@ exports.getOneOrder = async(req,res,next)=>{
                 message: 'Order not found'
             })
         }
+
+        const customer = {
+            firstname: order.firstName,
+            lastname: order.lastName,
+            address: order.pickUpTime,
+            phoneNumber: order.phoneNumber,
+            email: order.email
+        }
+        const booking = {
+            orderId: order.orderId,
+            item: order.item,
+            specification: order.specification,
+            quantity: order.quantity,
+            paymentMode: order.paymentMode,
+            readyDate: order.readyDate,
+            deliveryMode: order.deliveryMode
+        }
+
+        const payment = {
+             orderId: order.orderId,
+            item: order.item,
+            specification: order.specification,
+            unitPrice: order.unitPrice,
+            amount: order.amount
+        }
+
         res.status(200).json({
-            message: 'Order retrieved successfully',
-            order
+            message: 'Order details retrieved successfully',
+            customer,
+            booking,
+            payment
         })
     } catch (error) {
         next(error)

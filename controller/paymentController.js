@@ -42,7 +42,8 @@ exports.payOrder = async(req, res, next)=>{
         const payment = new paymentModel({
             adminId: order.adminId,
             customerId: order.customerId,
-            orderId: order.orderId,
+            orderId: id,
+            OrderId: order.orderId,
             paymentId: payId,
             reference: reference,
             item: order.item,
