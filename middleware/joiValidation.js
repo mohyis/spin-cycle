@@ -136,6 +136,55 @@ exports.createScheduleValidator = (req, res, next) => {
     }
     next()
 };
+exports.createOrderValidator = (req, res, next) => {
+    const schema = joi.object({
+        pickUpDate: joi.date().min('now').required().messages({
+            'any.required': 'Pick-up date is required',
+            'date.base': 'Pick-up date must be a valid date',
+            'date.greater': 'Pick-up date must be a future date'
+        }),
+        pickUpTime: joi.string().required().messages({
+            'any.required': 'Pick-up time is required',
+            'string.empty': 'Pick-up time cannot be empty'
+        }),
+        deliveryMode: joi.string().valid('delivery', 'pickup').required().messages({
+            'any.required': 'Delivery mode is required',
+            'string.empty': 'Delivery mode cannot be empty',
+            'any.only': 'Delivery mode must be either delivery or pickup'
+        }),
+        paymentMode: joi.string().valid('online', 'cash', 'transfer').required().messages({
+            'any.required': 'Payment mode is required',
+            'string.empty': 'Payment mode cannot be empty',
+            'any.only': 'Payment mode must be one of online, cash, or transfer'
+        }),
+        item: joi.string().optional().allow('').messages({
+            'string.base': 'Item must be a string'
+        }),
+        specification: joi.string().optional().allow('').messages({
+            'string.base': 'Specification must be a string'
+        }),
+        quantity: joi.number().integer().min(1).optional().messages({
+            'number.base': 'Quantity must be a number',
+            'number.integer': 'Quantity must be a whole number',
+            'number.min': 'Quantity must be at least 1'
+        }),
+        amount: joi.number().min(0).optional().messages({
+            'number.base': 'Amount must be a number',
+            'number.min': 'Amount cannot be negative'
+        }),
+        note: joi.string().optional().allow('').messages({
+            'string.base': 'Note must be a string'
+        })
+    })
+
+    const { error } = schema.validate(req.body)
+    if (error) {
+        return res.status(400).json({
+            message: error.details[0].message
+        })
+    }
+    next()
+};
 
 exports.updateOrderStatusValidator = (req, res, next) => {
     const schema = joi.object({
@@ -245,10 +294,10 @@ exports.createStaffValidator = (req, res, next) => {
             'string.empty': 'Email cannot be empty',
             'string.email': 'Invalid email format'
         }),
-        phoneNumber: joi.string().pattern(/^\+?[0-9]{7,15}$/).required().messages({
+        phoneNumber: joi.string().pattern(/^\+?[0-9]{11,14}$/).required().messages({
             'any.required': 'Phone number is required',
             'string.empty': 'Phone number cannot be empty',
-            'string.pattern.base': 'Phone number must be a valid number between 7 and 15 digits'
+            'string.pattern.base': 'Phone number must be a valid number between 11 and 14 digits'
         }),
         address: joi.string().min(5).required().messages({
             'any.required': 'Address is required',

@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { createOrder, getAllOrders, getOneOrder, updateOrderStatus, deleteOrder, getCompletedOrderSchedules, getCompleted, getInProgress, getCancelled, getNewRequests } = require('../controller/orderController');
 const { createSchedule, getAllCompletedOrders, getOneSchedule, deleteSchedule, assignStaffToSchedule } = require('../controller/orderController');
-const { createScheduleValidator, updateOrderStatusValidator } = require('../middleware/joiValidation');
+const { createScheduleValidator, updateOrderStatusValidator, createOrderValidator } = require('../middleware/joiValidation');
 const {scheduleRateLimiter,} = require('../middleware/rateLimiter');
 
 const { checkAdmin } = require('../middleware/validation');
@@ -156,9 +156,6 @@ const { checkAdmin } = require('../middleware/validation');
  *               amount:
  *                 type: number
  *                 example: 1500
- *               address:
- *                 type: string
- *                 example: 12 Lekki Phase 1, Lagos
  *               note:
  *                 type: string
  *                 example: Handle with care
@@ -176,7 +173,7 @@ const { checkAdmin } = require('../middleware/validation');
  *                 order:
  *                   $ref: '#/components/schemas/Order'
  */
-router.post('/create-order/:id', checkAdmin, createOrder);
+router.post('/create-order/:id', createOrderValidator, checkAdmin, createOrder);
 
 /**
  * @swagger

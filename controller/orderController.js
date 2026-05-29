@@ -176,7 +176,7 @@ exports.createOrder = async(req,res,next)=>{
     try {
         const {id} = req.user;
         const cusId = req.params.id
-        const { pickUpDate, pickUpTime, deliveryMode, paymentMode, item, specification, quantity, amount, address, note } = req.body 
+        const { pickUpDate, pickUpTime, deliveryMode, paymentMode, item, specification, quantity, amount, note } = req.body 
         
 
         const customer = await customerModel.findById(cusId)
@@ -366,6 +366,7 @@ exports.getOneOrder = async(req,res,next)=>{
     try {
         const {id} = req.params
         const order = await orderModel.findById(id)
+        const payment = await paymentModel.findOne({orderId: id})
         if(!order){
             return res.status(404).json({   
                 message: 'Order not found'
@@ -389,19 +390,19 @@ exports.getOneOrder = async(req,res,next)=>{
             deliveryMode: order.deliveryMode
         }
 
-        const payment = {
-             orderId: order.orderId,
-            item: order.item,
-            specification: order.specification,
+        const payments = {
+             OrderId: payment.OrderId,
+            item: payment.item,
+            specification: payment.specification,
             unitPrice: order.unitPrice,
-            amount: order.amount
+            amount: payment.amount
         }
 
         res.status(200).json({
             message: 'Order details retrieved successfully',
             customer,
             booking,
-            payment
+            payments
         })
     } catch (error) {
         next(error)
