@@ -101,6 +101,99 @@ const { checkAdmin } = require('../middleware/validation');
 
 /**
  * @swagger
+ * /api/order/create-order:
+ *   post:
+ *     tags:
+ *       - Order
+ *     summary: Create a laundry schedule
+ *     description: Allows customers or admins to book a laundry pickup/delivery schedule. No authentication required.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - firstName
+ *               - pickUpDate
+ *               - pickUpTime
+ *               - email
+ *               - address
+ *               - phoneNumber
+ *               - deliveryMode
+ *               - paymentMode
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 example: Jane
+ *               lastName:
+ *                 type: string
+ *                 example: Doe
+ *               pickUpDate:
+ *                 type: string
+ *                 format: date
+ *                 example: "2026-06-01"
+ *               pickUpTime:
+ *                 type: string
+ *                 example: "10:00 AM"
+ *               email:
+ *                 type: string
+ *                 example: jane.doe@example.com
+ *               address:
+ *                 type: string
+ *                 example: 12 Lekki Phase 1, Lagos
+ *               phoneNumber:
+ *                 type: string
+ *                 example: "+2348029837465"
+ *               deliveryMode:
+ *                 type: string
+ *                 example: delivery
+ *               paymentMode:
+ *                 type: string
+ *                 example: online
+ *               item:
+ *                 type: string
+ *                 example: shirts
+ *               specification:
+ *                 type: string
+ *                 example: dry clean only
+ *               quantity:
+ *                 type: number
+ *                 example: 3
+ *               amount:
+ *                 type: number
+ *                 example: 1500
+ *               note:
+ *                 type: string
+ *                 example: Handle with care
+ *     responses:
+ *       201:
+ *         description: Schedule created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Schedule created successfully
+ *                 data:
+ *                   $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Missing required fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Please fill in all required fields
+ */
+router.post('/create-order', createOrderValidator, orderRateLimiter, createOrder);
+
+/**
+ * @swagger
  * /api/order/orders:
  *   get:
  *     tags:
@@ -603,98 +696,6 @@ router.put('/order-status/:id', updateOrderStatusValidator ,checkAdmin, updateOr
 router.delete('/orders/:id', checkAdmin, deleteOrder);
 
 
-/**
- * @swagger
- * /api/order/order/create-order:
- *   post:
- *     tags:
- *       - Order
- *     summary: Create a laundry schedule
- *     description: Allows customers or admins to book a laundry pickup/delivery schedule. No authentication required.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - firstName
- *               - pickUpDate
- *               - pickUpTime
- *               - email
- *               - address
- *               - phoneNumber
- *               - deliveryMode
- *               - paymentMode
- *             properties:
- *               firstName:
- *                 type: string
- *                 example: Jane
- *               lastName:
- *                 type: string
- *                 example: Doe
- *               pickUpDate:
- *                 type: string
- *                 format: date
- *                 example: "2026-06-01"
- *               pickUpTime:
- *                 type: string
- *                 example: "10:00 AM"
- *               email:
- *                 type: string
- *                 example: jane.doe@example.com
- *               address:
- *                 type: string
- *                 example: 12 Lekki Phase 1, Lagos
- *               phoneNumber:
- *                 type: string
- *                 example: "+2348029837465"
- *               deliveryMode:
- *                 type: string
- *                 example: delivery
- *               paymentMode:
- *                 type: string
- *                 example: online
- *               item:
- *                 type: string
- *                 example: shirts
- *               specification:
- *                 type: string
- *                 example: dry clean only
- *               quantity:
- *                 type: number
- *                 example: 3
- *               amount:
- *                 type: number
- *                 example: 1500
- *               note:
- *                 type: string
- *                 example: Handle with care
- *     responses:
- *       201:
- *         description: Schedule created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Schedule created successfully
- *                 data:
- *                   $ref: '#/components/schemas/Order'
- *       400:
- *         description: Missing required fields
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Please fill in all required fields
- */
-router.post('/create-order', createOrderValidator, orderRateLimiter, createOrder);
 
 /**
  * @swagger
