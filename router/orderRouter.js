@@ -479,21 +479,21 @@ router.get('/schedules/completed', checkAdmin, getAllCompletedOrders);
  *   get:
  *     tags:
  *       - Order
- *     summary: Get a single order
- *     description: Retrieves a single order by its MongoDB ID. Requires admin authentication.
+ *     summary: Get one order
+ *     description: Retrieves details of a specific order by ID. Requires admin authentication.
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: The Order MongoDB ID
+ *         description: ID of the order to retrieve
  *         schema:
  *           type: string
  *           example: 787674563782983746578439
  *     responses:
  *       200:
- *         description: Order retrieved successfully
+ *         description: Order details retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -501,9 +501,68 @@ router.get('/schedules/completed', checkAdmin, getAllCompletedOrders);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Order retrieved successfully
- *                 order:
- *                   $ref: '#/components/schemas/Order'
+ *                   example: Order details retrieved successfully
+ *                 customer:
+ *                   type: object
+ *                   properties:
+ *                     firstname:
+ *                       type: string
+ *                       example: John
+ *                     lastname:
+ *                       type: string
+ *                       example: Doe
+ *                     address:
+ *                       type: string
+ *                       example: 10:00 AM
+ *                     phoneNumber:
+ *                       type: string
+ *                       example: "08012345678"
+ *                     email:
+ *                       type: string
+ *                       example: johndoe@gmail.com
+ *                 booking:
+ *                   type: object
+ *                   properties:
+ *                     orderId:
+ *                       type: string
+ *                       example: "#SC-1234567"
+ *                     item:
+ *                       type: string
+ *                       example: Clothes
+ *                     specification:
+ *                       type: string
+ *                       example: Wash and iron
+ *                     quantity:
+ *                       type: number
+ *                       example: 5
+ *                     paymentMode:
+ *                       type: string
+ *                       example: online
+ *                     readyDate:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2026-06-03T00:00:00.000Z"
+ *                     deliveryMode:
+ *                       type: string
+ *                       example: delivery
+ *                 payments:
+ *                   type: object
+ *                   properties:
+ *                     OrderId:
+ *                       type: string
+ *                       example: "#SC-1234567"
+ *                     item:
+ *                       type: string
+ *                       example: Clothes
+ *                     specification:
+ *                       type: string
+ *                       example: Wash and iron
+ *                     unitPrice:
+ *                       type: number
+ *                       example: 500
+ *                     amount:
+ *                       type: number
+ *                       example: 2500
  *       404:
  *         description: Order not found
  *         content:
@@ -515,6 +574,7 @@ router.get('/schedules/completed', checkAdmin, getAllCompletedOrders);
  *                   type: string
  *                   example: Order not found
  */
+
 router.get('/orders/:id', checkAdmin, getOneOrder);
 
 /**
